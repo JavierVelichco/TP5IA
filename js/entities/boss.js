@@ -52,9 +52,9 @@ class Boss {
 
 function createBossForMonth(monthIndex, baseHp) {
     if (monthIndex === 0) {
-        return new Boss({ hp: baseHp, img: imagenes["navidad"], w: 96, h: 72, r: 48, speed: 2.0, shotInterval: 650, pattern: "single" });
+        return new Boss({ hp: baseHp, img: imagenes["impuestos"], w: 96, h: 72, r: 48, speed: 2.0, shotInterval: 650, pattern: "single" });
     } else if (monthIndex === 1) {
-        return new Boss({ hp: baseHp + 120, img: imagenes["impuestos"], w: 108, h: 80, r: 54, speed: 2.3, shotInterval: 520, pattern: "spread3" });
+        return new Boss({ hp: baseHp + 120, img: imagenes["navidad"], w: 108, h: 80, r: 54, speed: 2.3, shotInterval: 520, pattern: "spread3" });
     } else {
         return new Boss({ hp: baseHp + 240, img: imagenes["alquiler"], w: 120, h: 88, r: 60, speed: 2.6, shotInterval: 420, pattern: "burst" });
     }

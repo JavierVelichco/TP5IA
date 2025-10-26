@@ -106,5 +106,5 @@ function startGame() {
 }
 
 function actualizarSueldo(monthIndex) {
-    if (monthIndex + 1 >= 2) money = SUELDO; else money += SUELDO;
+    money += SUELDO;
 }

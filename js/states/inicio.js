@@ -21,7 +21,7 @@ function drawInicio() {
     text("Elegí la dificultad y luego presioná:", width / 2, 270);
 
     // --- Botón JUGAR ---
-    const btnY = 305;   // posición vertical del botón
+    const btnY = 360;   // posición vertical del botón
     startBtn.x = width / 2 - startBtn.w / 2;
     startBtn.y = btnY;
 
@@ -39,7 +39,9 @@ function drawInicio() {
 
     // Atajos
     textSize(13);
-    text("ENTER para comenzar • C para Créditos", width / 2, btnY + 60);
+
+
+    text("ENTER para comenzar • C para Créditos", width / 2, btnY + 90);
 }
 
 
@@ -49,8 +51,8 @@ function drawInicio() {
 function placeDiffSelect() {
     if (!diffSelect || !cnv) return; // seguridad
     const p = cnv.position(); // esquina superior izquierda del canvas
-    const x = p.x + width / 2 - diffSelect.elt.offsetWidth / 2;
-    const y = p.y + 320; // altura bajo el texto de inicio
+    const x = p.x + width / 2 - diffSelect.elt.offsetWidth / 2 - 50;
+    const y = p.y + 300; // altura bajo el texto de inicio
     diffSelect.position(x, y);
     diffSelect.show();
 }
