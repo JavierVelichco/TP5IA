@@ -76,6 +76,12 @@ function draw() {
         return;
     }
 
+    if (state === STATES.SCORE) {
+        diffSelect.hide();
+        drawScore();   // ← nueva pantalla
+        updatePopups();
+        return;
+    }
 
 
 
@@ -84,8 +90,9 @@ function draw() {
     drawCity();
     drawHUD();
 
-    if (gameOver) { setState(STATES.PERDER); noLoop(); drawPerder(); updatePopups(); return; }
-    if (victory) { setState(STATES.GANAR); noLoop(); drawGanar(); updatePopups(); return; }
+    if (gameOver) { noLoop(); enterScore(money, monthIndex); return; }
+    if (victory) { noLoop(); enterScore(money, monthIndex); return; }
+
 
     const now = millis();
     const elapsedMonth = now - monthStartTime;
@@ -151,10 +158,4 @@ function overStartBtn() {
         mouseY >= startBtn.y && mouseY <= startBtn.y + startBtn.h;
 }
 
-// --- Función que inicia el juego cuando se hace clic o se presiona ENTER
-function startGame() {
-    setState(STATES.JUEGO);
-    monthStartTime = millis();
-    loop();
-    diffSelect.hide(); // oculta el selector de dificultad
-}
+

@@ -66,6 +66,23 @@ function exitBoss() {
     }
 }
 
+function goToScore() {
+    // Actualiza highscore si corresponde
+    if (money > highscore.money || (money === highscore.money && monthIndex > highscore.month)) {
+        highscore.money = money;
+        highscore.month = monthIndex;
+        highscore.when = new Date().toLocaleDateString();
+        saveHighscore();
+    }
+
+    // Oculta el selector por si hubiera quedado visible
+    if (typeof diffSelect !== 'undefined') diffSelect.hide();
+
+    setState(STATES.SCORE);
+    noLoop(); // deja de simular mientras se ve el score
+}
+
+
 function startGame() {
     // aplicar dificultad elegida en el menú
     setDifficulty(currentDiff);              // "facil" | "normal" | "dificil"
@@ -107,4 +124,5 @@ function startGame() {
 
 function actualizarSueldo(monthIndex) {
     money += SUELDO;
+    floatingPopup(width / 2, 60, "💰 Sueldo depositado: +$" + nf(SUELDO, 0, 0), color(0, 200, 0));
 }

@@ -5,6 +5,7 @@ const STATES = {
     GANAR: "ganar",
     PERDER: "perder",
     CREDITOS: "creditos",
+    SCORE: "score",
 };
 let state = STATES.INICIO;
 
