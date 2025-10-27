@@ -5,23 +5,23 @@ function drawInicio() {
 
     // Título
     textSize(28);
-    text("💸 Llegar a fin de mes", width / 2, 70);
+    text("Llegar a fin de mes", width / 2, 70);
 
-    // Subtítulo / consigna (dos líneas)
+    // Subtítulo 
     textSize(14);
-    text("Tratá de sobrevivir con un Salario Mínimo Vital y Móvil", width / 2, 110);
-    text("Esquivá gastos y enfrentá al jefe", width / 2, 130);
+    text("Tratá de sobrevivir con un Salario Mínimo Vital y Móvil argentino", width / 2, 110);
+    text("Esquivá gastos y enfrentá al jefe del fin de mes", width / 2, 130);
 
-    // Controles e instrucciones
-    text("Mover: Flechas o WASD  •  Disparar (jefe): Z o J", width / 2, 170);
-    text("Objetivo: Sobrevivir cada mes y vencer al jefe", width / 2, 220);
+    // Controles 
+    text("Mover: Flechas o WASD  •  Disparar al jefe: Z o J", width / 2, 170);
+    text("Objetivo: Sobrevivir sin deudas", width / 2, 220);
 
     // Indicaciones de inicio
     textSize(14);
     text("Elegí la dificultad y luego presioná:", width / 2, 270);
 
     // --- Botón JUGAR ---
-    const btnY = 360;   // posición vertical del botón
+    const btnY = 360;   
     startBtn.x = width / 2 - startBtn.w / 2;
     startBtn.y = btnY;
 
@@ -39,18 +39,14 @@ function drawInicio() {
 
     // Atajos
     textSize(13);
-
-
     text("ENTER para comenzar • C para Créditos", width / 2, btnY + 90);
 }
 
 
-
-
-// --- Utilidad: posiciona centrado el selector en INICIO ---
+//Centrar selector en INICIO ---
 function placeDiffSelect() {
     if (!diffSelect || !cnv) return; // seguridad
-    const p = cnv.position(); // esquina superior izquierda del canvas
+    const p = cnv.position(); 
     const x = p.x + width / 2 - diffSelect.elt.offsetWidth / 2 - 50;
     const y = p.y + 300; // altura bajo el texto de inicio
     diffSelect.position(x, y);

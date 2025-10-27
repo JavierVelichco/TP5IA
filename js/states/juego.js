@@ -85,8 +85,8 @@ function goToScore() {
 
 function startGame() {
     // aplicar dificultad elegida en el menú
-    setDifficulty(currentDiff);              // "facil" | "normal" | "dificil"
-    setState(STATES.JUEGO);
+    setDifficulty(currentDiff);  
+       setState(STATES.JUEGO);
 
     // ocultar el selector al entrar al juego (por si quedó visible)
     if (typeof diffSelect !== 'undefined') diffSelect.hide();
@@ -99,7 +99,7 @@ function startGame() {
     inBoss = false;
     boss = null;
 
-    // limpiar entidades
+    // limpiar objetos
     falling = [];
     bullets = [];
     enemyBullets = [];

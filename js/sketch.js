@@ -1,4 +1,4 @@
-// === Variables globales de interfaz (UI) ===
+// === Variables globales de interfaz 
 let cnv;                // referencia al canvas
 let diffSelect;         // selector de dificultad
 let currentDiff = "normal"; // dificultad inicial
@@ -9,8 +9,7 @@ function setup() {
     // Crea el canvas directamente en el body
     cnv = createCanvas(400, 600);
 
-
-    // Desplegable de dificultad (p5 DOM)
+    // Desplegable de dificultad 
     diffSelect = createSelect();
     diffSelect.hide();
     diffSelect.option('Argentino', 'facil');
@@ -19,10 +18,10 @@ function setup() {
     diffSelect.selected(currentDiff);
     diffSelect.changed(() => {
         currentDiff = diffSelect.value();
-        setDifficulty(currentDiff);      // usa tu función existente
+        setDifficulty(currentDiff);      
     });
 
-    // Un toquecito de estilo
+    // estilo
     diffSelect.style('font-size', '14px');
     diffSelect.style('padding', '6px 10px');
     diffSelect.style('border-radius', '8px');
@@ -49,10 +48,9 @@ function setup() {
 function draw() {
 
 
-    // Router de estados
     if (state === STATES.INICIO) {
         drawInicio();
-        placeDiffSelect();  // ✅ en vez de las 3 líneas manuales
+        placeDiffSelect();  
         updatePopups();
         return;
     }
@@ -142,20 +140,7 @@ function draw() {
     }
 
     if (money <= 0 && !gameOver) gameOver = true;
-
-    // ⬅️ Usa la versión que corresponda a tu función:
-    // O bien:
-    // drawMonthProgress(elapsedMonth);
-    // O (si tu función calcula internamente):
     drawMonthProgress();
-
     updatePopups();
 }
-
-// --- Función auxiliar: detecta si el mouse está sobre el botón "JUGAR"
-function overStartBtn() {
-    return mouseX >= startBtn.x && mouseX <= startBtn.x + startBtn.w &&
-        mouseY >= startBtn.y && mouseY <= startBtn.y + startBtn.h;
-}
-
 

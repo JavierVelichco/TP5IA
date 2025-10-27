@@ -1,9 +1,8 @@
-// --- ENTRAR A LOS CRÉDITOS ---
 function enterCredits() {
     // Cambia el estado actual a CREDITOS
     setState(STATES.CREDITOS);
 
-    // 🔹 Limpia todos los elementos que podrían quedar en pantalla
+    //  Limpia pantalla
     if (typeof popups !== 'undefined') popups.length = 0;
     if (typeof falling !== 'undefined') falling.length = 0;
     if (typeof bullets !== 'undefined') bullets.length = 0;
@@ -12,18 +11,14 @@ function enterCredits() {
     inBoss = false;
     boss = null;
 
-    // 🔹 Restablece el modo de dibujo
+    // Restablece el modo de dibujo
     resetMatrix();
     blendMode(BLEND);
     noTint();
 
-    // 🔹 Opcional: reinicia el jugador si querés que desaparezca por completo
-    player = null;
 }
 
 
-
-// --- DIBUJAR LOS CRÉDITOS ---
 function drawCreditos() {
     background(20, 24, 36);
     fill(255);
@@ -40,7 +35,7 @@ function drawCreditos() {
         "",
         "Llegar a finde mes",
         "",
-        "Alumnos:",
+        "Estudiantes:",
         "Camila Barbón y Javier Velichco",
         "",
         "",
@@ -50,7 +45,7 @@ function drawCreditos() {
         "Cátedra Bedoian",
         "",
         "",
-        "Gracias por jugar ❤️",
+        "Gracias por jugar",
     ];
     let y = 110;
     for (let i = 0; i < lines.length; i++) {

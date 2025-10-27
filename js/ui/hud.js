@@ -13,18 +13,6 @@ function drawHUD() {
     let remaining = inBoss ? max(0, BOSS_DURATION_MS - (millis() - bossStartTime))
         : max(0, MONTH_DURATION_MS - (millis() - monthStartTime));
     text("⏱️ " + nf(remaining / 1000, 2, 1) + " s", 300, 18);
-
-    // textSize(12);
-    //text("Disparo: $ -" + nf(SHOT_COST, 0, 0), 220, 38);
-
-    // let stepW = (width - 40) / TOTAL_MONTHS;
-    // for (let i = 0; i < TOTAL_MONTHS; i++) {
-    //   let x = 20 + i * stepW + stepW / 2, y = 58;
-    // if (i < monthIndex) fill(100, 220, 100);
-    // else if (i === monthIndex) fill(255, 220, 0);
-    // else fill(90);
-    //  ellipse(x, y, 10, 10);
-    // }
 }
 
 function drawMonthProgress() {

@@ -2,7 +2,7 @@
 const SUELDO = 322200;
 let money = SUELDO;
 
-const MONTHS = ["Noviembre", "Diciembre"]; // ← si querés 2 meses
+const MONTHS = ["Noviembre", "Diciembre"]; 
 const MONTH_DURATION_MS = 45 * 1000;
 const BOSS_DURATION_MS = 25 * 1000;
 const TOTAL_MONTHS = MONTHS.length;

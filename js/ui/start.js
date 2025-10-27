@@ -1,4 +1,4 @@
-// js/ui/start.js
+
 (function () {
     const intro = document.getElementById("intro");
     const startBtn = document.getElementById("startBtn");
@@ -17,11 +17,9 @@
             const cnv = document.querySelector("canvas");
             if (cnv) cnv.style.display = "block";
             if (intro) intro.style.display = "none";
-
-            // Hook con tu lógica de estados + p5
             if (window.setState) setState(STATES.JUEGO);
             if (window.startGame) window.startGame();
-            if (window.loop) loop(); // por si usás noLoop() en setup
+            if (window.loop) loop(); 
         });
     }
 })();

@@ -1,4 +1,3 @@
-// === SCORE / RANKING ===
 let scoreInput = null, scoreBtn = null;
 let leaderboard = [];
 let lastRun = { money: 0, month: 0 };
