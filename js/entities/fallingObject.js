@@ -7,35 +7,49 @@ class FallingObject {
         this.isExpense = (kind !== "ingreso");
 
         if (!this.isExpense) {
-            // Ingresos: puede caer billete o más billetes
-            this.sub = random() < 0.65 ? "billete" : "masbillete";
-            this.v = (this.sub === "billete" ? random(2.2, 3.6) : random(2.4, 3.8)) * speedMultiplier;
+            // INGRESOS
+            this.sub = random() < 0.7 ? "billete" : "masbillete";
+            this.v = (this.sub === "billete" ? random(2.2, 3.4) : random(2.4, 3.6)) * speedMultiplier;
             this.swayAmp = 0.15;
             this.col = color(90, 200, 110);
-            this.value = int(SUELDO * INCOME_PERCENT);
+
+            // el valor del ingreso disminuye levemente a medida que aumenta la dificultad (diff)
+            const incomeFactor = map(diff, 1, 10, 1.0, 0.5, true);
+            this.value = int(SUELDO * INCOME_PERCENT * random(0.8, 1.3) * incomeFactor);
             this.icon = "💵";
             this.imgKey = this.sub; // "billete" o "masbillete"
         } else {
-            this.v = (random(2.4, 3.2) + diff * 0.35) * speedMultiplier;
+            // GASTOS: caen más rápido, son más variados y aumentan con la dificultad
+            this.v = (random(2.4, 3.4) + diff * 0.4) * speedMultiplier;
             this.swayAmp = 0.8;
-            if (kind === "gasto_chico") {
+
+            // los tipos de gasto se eligen al azar, pero el valor crece con diff
+            let r = random(1);
+            if (r < 0.5) {
+                // gastos chicos (cafecito, comida rápida, transporte, etc.)
+                this.kind = "gasto_chico";
                 this.col = color(255, 120, 120);
-                this.value = -int(SUELDO * GASTO_CHICO_PCT);
-                this.icon = "🍔";
-            } else if (kind === "gasto_med") {
+                this.value = -int(SUELDO * GASTO_CHICO_PCT * random(0.5, 1.8) * (1 + diff * 0.05));
+                this.icon = random(["🍔", "☕", "🎟️", "🍞"]);
+            } else if (r < 0.85) {
+                // gastos medianos (servicios, comidas, salidas)
+                this.kind = "gasto_med";
                 this.col = color(230, 80, 80);
-                this.value = -int(SUELDO * GASTO_MED_PCT);
-                this.icon = "🍕";
+                this.value = -int(SUELDO * GASTO_MED_PCT * random(0.8, 2.4) * (1 + diff * 0.08));
+                this.icon = random(["🍕", "🍻", "🧾", "📱"]);
             } else {
+                // gastos grandes (alquiler, auto, cuentas importantes)
+                this.kind = "gasto_grande";
                 this.col = color(200, 30, 30);
-                this.value = -int(SUELDO * GASTO_GRANDE_PCT);
-                this.icon = "💡";
-                this.d *= 1.2;
+                this.value = -int(SUELDO * GASTO_GRANDE_PCT * random(1.5, 3.5) * (1 + diff * 0.12));
+                this.icon = random(["🏠", "🚗", "💡", "🧰"]);
+                this.d *= 1.3;
             }
-            this.imgKey = kind; // gasto_chico, gasto_med o gasto_grande
+
+            this.imgKey = this.kind;
         }
 
-        // Vinculamos la imagen desde preload()
+        // se vincula la imagen correspondiente desde preload()
         this.img = imagenes[this.imgKey] || null;
     }
 
