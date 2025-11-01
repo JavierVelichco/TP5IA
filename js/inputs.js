@@ -19,17 +19,31 @@ function keyPressed() {
 
     // --- GANAR / PERDER ---
     if (state === STATES.PERDER || state === STATES.GANAR) {
+
+        // Ir a créditos con C
         if (key === 'c' || key === 'C') {
             setState(STATES.CREDITOS);
-            noLoop();
             redraw();
+            noLoop();
             return;
         }
-        if (keyCode === ENTER || keyCode === 13) {
-            enterScore(money, monthIndex); // abrir SCORE con los datos finales
+
+        // Continuar con ENTER
+        if (keyCode === ENTER || keyCode === RETURN || keyCode === 13) {
+            console.log("[KEY] ENTER en GANAR/PERDER → SCORE"); // Debug
+
+            // Ir al score (si existe la función, sino fallback)
+            if (typeof enterScore === "function") {
+                enterScore(money, monthIndex);
+            } else {
+                setState(STATES.SCORE);
+                redraw();
+                noLoop();
+            }
             return;
         }
     }
+
 
     // --- SCORE ---
     if (state === STATES.SCORE) {
@@ -59,9 +73,15 @@ function keyPressed() {
         else floatingPopup(player.x, player.y - 30, "No $", color(200, 50, 50));
     }
 }
-
 function mousePressed() {
     if (state === STATES.INICIO) {
+        // 1) ¿Clic en el menú desplegable (canvas)?
+        if (diffDropdown && diffDropdown.handleMousePressed(mouseX, mouseY)) {
+            redraw(); // usa noLoop(), así refrescamos la vista
+            return;
+        }
+
+        // 2) ¿Clic en el botón JUGAR?
         const overBtn =
             mouseX >= startBtn.x && mouseX <= startBtn.x + startBtn.w &&
             mouseY >= startBtn.y && mouseY <= startBtn.y + startBtn.h;
@@ -73,5 +93,15 @@ function mousePressed() {
         setState(STATES.INICIO);
         noLoop();
         redraw();
+    }
+}
+
+function mouseMoved() {
+    if (state === STATES.INICIO) {
+        if (diffDropdown && diffDropdown.handleMouseMoved(mouseX, mouseY)) {
+            redraw();
+        } else {
+            redraw(); // refresca hover del botón JUGAR también
+        }
     }
 }
