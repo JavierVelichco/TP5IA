@@ -15,54 +15,6 @@ body {
     text-align: center;
 }
 
-/* Pantalla de inicio más grande */
-#intro {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 480px;
-    height: 800px;
-    /* 👈 más alto que el canvas */
-    background: linear-gradient(180deg, #111 0%, #333 100%);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 25px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-    z-index: 10;
-}
-
-#intro h1 {
-    font-size: 30px;
-    margin: 0;
-}
-
-#intro p {
-    max-width: 360px;
-    font-size: 16px;
-    line-height: 1.4;
-}
-
-#startBtn {
-    background: #00cc66;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    padding: 12px 24px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-}
-
-#startBtn:hover {
-    background: #00aa55;
-    transform: scale(1.05);
-}
-
 canvas {
     display: block;
     margin: auto;

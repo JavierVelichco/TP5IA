@@ -1,146 +1,136 @@
-// === Variables globales de interfaz 
-let cnv;                // referencia al canvas
-let diffSelect;         // selector de dificultad
-let currentDiff = "normal"; // dificultad inicial
-let startBtn = { x: 0, y: 0, w: 180, h: 44 }; // botón "JUGAR"
-
+// js/sketch.js
+let cnv;
+let startBtn = { x: 0, y: 0, w: 180, h: 44 };
 
 function setup() {
-    // Crea el canvas directamente en el body
     cnv = createCanvas(400, 600);
 
-    // Desplegable de dificultad 
-    diffSelect = createSelect();
-    diffSelect.hide();
-    diffSelect.option('Argentino', 'facil');
-    diffSelect.option('Normal', 'normal');
-    diffSelect.option('Difícil', 'dificil');
-    diffSelect.selected(currentDiff);
-    diffSelect.changed(() => {
-        currentDiff = diffSelect.value();
-        setDifficulty(currentDiff);      
-    });
+    // Estado inicial y dificultad por defecto (usa tu módulo difficulty.js)
+    setState(STATES.INICIO);
+    setDifficulty(CURRENT_DIFF);
 
-    // estilo
-    diffSelect.style('font-size', '14px');
-    diffSelect.style('padding', '6px 10px');
-    diffSelect.style('border-radius', '8px');
-    diffSelect.style('border', '1px solid #8aa');
-
-    setState(STATES.INICIO); // arranca en el estado de inicio
+    // En pantallas estáticas preferimos noLoop() + redraw() manual
     noLoop();
 
+    // Inicialización básica (las clases están en /entities y /ui)
     noStroke();
-    player = new Player();
+    if (typeof Player === "function") player = new Player();
     startTimeGlobal = millis();
     monthStartTime = millis();
 
-    // Crea los edificios del fondo
-    for (let i = 0; i < 10; i++) {
-        buildings.push(new Building("left", i));
-        buildings.push(new Building("right", i));
+    // Fondo de ciudad (si tu módulo city usa este array global 'buildings')
+    if (Array.isArray(buildings)) {
+        buildings.length = 0;
+        for (let i = 0; i < 10; i++) {
+            buildings.push(new Building("left", i));
+            buildings.push(new Building("right", i));
+        }
     }
 
     textFont("Arial");
 }
 
-
 function draw() {
-
-
-    if (state === STATES.INICIO) {
-        drawInicio();
-        placeDiffSelect();  
-        updatePopups();
+    // 0) La transición del jefe SIEMPRE tiene prioridad.
+    // Mientras bossTransition.active esté en true, solo dibujamos la animación.
+    if (bossTransition && bossTransition.active) {
+        // updateBossPhase() invoca internamente drawBossTransition()
+        updateBossPhase?.();
+        updatePopups?.();
         return;
     }
 
-    if (state === STATES.CREDITOS) {
-        diffSelect.hide();
-        drawCreditos();
-        updatePopups();
-        return;
-    }
-    if (state === STATES.GANAR) {
-        diffSelect.hide();
-        drawGanar();
-        updatePopups();
-        return;
-    }
-    if (state === STATES.PERDER) {
-        diffSelect.hide();
-        drawPerder();
-        updatePopups();
+    // 1) Pantallas estáticas (router simple)
+    if (state !== STATES.JUEGO) {
+        if (state === STATES.INICIO) { drawInicio?.(); updatePopups?.(); return; }
+        if (state === STATES.CREDITOS) { drawCreditos?.(); updatePopups?.(); return; }
+        if (state === STATES.GANAR) { drawGanar?.(); updatePopups?.(); return; }
+        if (state === STATES.PERDER) { drawPerder?.(); updatePopups?.(); return; }
+        if (state === STATES.SCORE) { drawScore?.(); updatePopups?.(); return; }
         return;
     }
 
-    if (state === STATES.SCORE) {
-        diffSelect.hide();
-        drawScore();   // ← nueva pantalla
-        updatePopups();
-        return;
-    }
-
-
-
-    // ===== JUEGO =====
+    // ===== 2) Estado JUEGO =====
     background(120, 170, 255);
-    drawCity();
-    drawHUD();
-
-    if (gameOver) { noLoop(); enterScore(money, monthIndex); return; }
-    if (victory) { noLoop(); enterScore(money, monthIndex); return; }
-
+    drawCity?.();
+    drawHUD?.();
 
     const now = millis();
     const elapsedMonth = now - monthStartTime;
 
     if (inBoss) {
-        updateBossPhase();
+        // Puede disparar startBossTransition('win'|'lose') internamente
+        updateBossPhase?.();
     } else {
-        handleSpawning(elapsedMonth);
+        // Spawning y objetos que caen
+        handleSpawning?.(elapsedMonth);
 
         for (let i = falling.length - 1; i >= 0; i--) {
-            let o = falling[i];
-            o.update(); o.draw();
-            if (o.hits(player)) {
+            const o = falling[i];
+            o.update?.();
+            o.draw?.();
+
+            if (o.hits?.(player)) {
                 money += o.value;
-                floatingPopup(
+                floatingPopup?.(
                     o.x, o.y,
                     (o.value > 0 ? "+" : "") + "$" + nf(abs(int(o.value)), 0, 0),
                     o.value > 0 ? color(0, 180, 0) : color(220, 50, 50)
                 );
                 falling.splice(i, 1);
-            } else if (o.y - o.d / 2 > height + 50) {
+            } else if (o.offscreen?.()) {
                 falling.splice(i, 1);
             }
         }
 
-        player.update();
-        player.draw();
+        // Jugador
+        player.update?.();
+        player.draw?.();
 
+        // Balas del jugador
         for (let i = bullets.length - 1; i >= 0; i--) {
-            let b = bullets[i];
-            b.update(); b.draw();
-            if (b.offscreen()) bullets.splice(i, 1);
+            const b = bullets[i];
+            b.update?.();
+            b.draw?.();
+            if (b.offscreen?.()) bullets.splice(i, 1);
         }
 
-        if (elapsedMonth >= MONTH_DURATION_MS) enterBoss();
+        // ¿Entrar a jefe?
+        if (elapsedMonth >= MONTH_DURATION_MS) enterBoss?.();
     }
 
+    // Balas enemigas
     for (let i = enemyBullets.length - 1; i >= 0; i--) {
-        let eb = enemyBullets[i];
-        eb.update(); eb.draw();
-        if (eb.hits(player)) {
+        const eb = enemyBullets[i];
+        eb.update?.();
+        eb.draw?.();
+        if (eb.hits?.(player)) {
             money -= ENEMY_HIT_COST;
-            floatingPopup(eb.x, eb.y, "-$" + nf(ENEMY_HIT_COST, 0, 0), color(220, 50, 50));
-            player.bump();
+            floatingPopup?.(eb.x, eb.y, "-$" + nf(ENEMY_HIT_COST, 0, 0), color(220, 50, 50));
+            player.bump?.();
             enemyBullets.splice(i, 1);
-        } else if (eb.offscreen()) enemyBullets.splice(i, 1);
+        } else if (eb.offscreen?.()) {
+            enemyBullets.splice(i, 1);
+        }
     }
 
-    if (money <= 0 && !gameOver) gameOver = true;
-    drawMonthProgress();
-    updatePopups();
-}
+    // Derrota global por dinero: usar transición 'lose' (temblor + risa)
+    if (money <= 0 && !gameOver) {
+        gameOver = true;
+        if (!bossTransition.active) startBossTransition?.('lose');
+        updatePopups?.();
+        return; // esperamos a que termine la animación de pérdida
+    }
 
+    // Victoria fuera de jefe (si tu flujo lo usa)
+    // Si venías de jefe final, updateBossPhase ya disparó la transición 'win'.
+    if (victory && !bossTransition.active) {
+        setState(STATES.GANAR);
+        noLoop();
+        return;
+    }
+
+    // HUD inferior y popups
+    drawMonthProgress?.();
+    updatePopups?.();
+}

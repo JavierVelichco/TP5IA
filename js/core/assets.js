@@ -4,7 +4,6 @@ function preload() {
     // jefes
     imagenes["navidad"] = loadImage("img/jefe-navidenio.png");
     imagenes["impuestos"] = loadImage("img/jefe-impuestos.png");
-    imagenes["alquiler"] = loadImage("img/jefe-alquiler.png");
 
     // jugador
     playerImg = loadImage("img/tortu.png");

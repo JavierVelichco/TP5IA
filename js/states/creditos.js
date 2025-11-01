@@ -26,30 +26,34 @@ function drawCreditos() {
     textSize(26);
     text("Créditos", width / 2, 40);
 
-    textSize(16);
     const lines = [
+        { text: "Universidad Nacional de las Artes", size: 16 },
+        { text: "Área Transdepartamental de Artes Multimediales", size: 16 },
+        { text: "", size: 16 },
+        { text: "", size: 16 },
 
-        "Universidad Nacional de las Artes",
-        "Área Transdepartamental de Artes Multimediales",
-        "",
-        "",
-        "Llegar a finde mes",
-        "",
-        "Estudiantes:",
-        "Camila Barbón y Javier Velichco",
-        "",
-        "",
-        "Trabajo Práctico Nº 5 - ",
-        "Informática Aplicada I",
+        // Título del juego destacado
+        { text: "Llegar a fin de mes", size: 28 },
 
-        "Cátedra Bedoian",
-        "",
-        "",
-        "Gracias por jugar",
+        { text: "", size: 16 },
+        { text: "Estudiantes:", size: 16 },
+        { text: "Camila Barbón y Javier Velichco", size: 16 },
+        { text: "", size: 16 },
+        { text: "", size: 16 },
+        { text: "Trabajo Práctico Nº 5", size: 16 },
+        { text: "Informática Aplicada I", size: 16 },
+        { text: "", size: 16 },
+        { text: "Cátedra Bedoian", size: 16 },
+        { text: "", size: 16 },
+        { text: "", size: 16 },
+        { text: "Gracias por jugar", size: 16 },
     ];
+
     let y = 110;
     for (let i = 0; i < lines.length; i++) {
-        text(lines[i], width / 2, y + i * 26);
+        textSize(lines[i].size);
+        text(lines[i].text, width / 2, y);
+        y += 24;
     }
 
     textSize(14);
