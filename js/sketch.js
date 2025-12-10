@@ -1,4 +1,9 @@
 // js/sketch.js
+
+function stopAllMusic() {
+    musicaMenu?.stop();
+    musicaJuego?.stop();
+}
 let cnv;
 let startBtn = { x: 0, y: 0, w: 180, h: 44 };
 
@@ -28,6 +33,16 @@ function setup() {
     }
 
     textFont("Arial");
+    // Habilita el audio tras primer click
+    userStartAudio().then(() => {
+        console.log("AudioContext listo, podemos reproducir música");
+
+        // Iniciar música de menú
+        if (musicaMenu && !musicaMenu.isPlaying()) {
+            musicaMenu.loop();
+            musicaMenu.setVolume(0.5);
+        }
+    });
 }
 
 function draw() {

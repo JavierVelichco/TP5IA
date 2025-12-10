@@ -1,8 +1,11 @@
-// Config y variables globales, elementos de interfaz ni del canvas.
+// Config y variables globales, elementos de interfaz.
+let musicaMenu = null;
+let musicaJuego = null;
+
 const SUELDO = 322200;
 let money = SUELDO;
 
-const MONTHS = ["Noviembre", "Diciembre"]; 
+const MONTHS = ["Noviembre", "Diciembre"];
 const MONTH_DURATION_MS = 45 * 1000;
 const BOSS_DURATION_MS = 25 * 1000;
 const TOTAL_MONTHS = MONTHS.length;
@@ -37,3 +40,4 @@ let BOSS_BASE_HP = 1200;
 
 let imagenes = {};
 let playerImg;
+
