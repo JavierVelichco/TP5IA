@@ -36,10 +36,10 @@ function enterScore(finalMoney, finalMonth) {
     if (!scoreBtn) scoreBtn = createButton("Guardar");
 
     // Estilos base del input
-    scoreInput.attribute("maxlength", "18");
+    scoreInput.attribute("maxlength", "16");
     scoreInput.attribute("placeholder", "Tu nombre");
-    scoreInput.style("padding", "8px 10px");
-    scoreInput.style("border-radius", "8px");
+    scoreInput.style("padding", "4px 6px");
+    scoreInput.style("border-radius", "6px");
     scoreInput.style("border", "1px solid #8aa");
     scoreInput.style("font-size", "14px");
     scoreInput.style("box-shadow", "0 1px 4px rgba(0,0,0,0.15)");
@@ -234,7 +234,7 @@ function drawScore() {
 
     fill(255);
     textSize(26);
-    text("Resultados", width / 2, 40);
+    text("Tus resultados", width / 2, 40);
 
     textSize(16);
     fill(230);
@@ -243,12 +243,13 @@ function drawScore() {
 
     fill(210);
     textSize(14);
-    text("Escribe tu nombre y presiona Guardar", width / 2, 150);
-    text("ENTER = Guardar  •  R = Reintentar  •  M = Menú", width / 2, 170);
+    text("Guardá tu nombre y mirá el ranking ", width / 2, 150);
+    text("¿Quién llega a fin de mes? ", width / 2, 170);
+    text("ENTER = Guardar  |  R = Reintentar  |  M = Menú", width / 2, 370);
 
     fill(255);
     textSize(18);
-    text("Ranking (Top 10)", width / 2, 210);
+    text("Ranking | Top 10", width / 2, 210);
 
     textAlign(LEFT, TOP);
     textSize(14);

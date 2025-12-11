@@ -129,20 +129,26 @@ function drawInicio() {
 
     // Título
     textSize(28);
-    text("Quién llega a fin de mes", width / 2, 70);
+    textStyle(BOLD);
+    text("¿Quién llega a fin de mes?", width / 2, 120);
 
     // Subtítulo 
+    textStyle(NORMAL);
     textSize(19);
-    text("¡Tratá de sobrevivir! ", width / 2, 110);
+    text("Objetivo: sobrevivir sin deudas", width / 2, 150);
 
-    // Controles 
-    text("CONTROLES", width / 2, 175);
-    text("Para moverte usá las flechas", width / 2, 200);
-    text("o las teclas W A S D", width / 2, 220);
-    text("Para disparar al jefe usá Z o J", width / 2, 240);
+    // Controles
+    textSize(15);
+    textStyle(BOLD); 
+    text("Controles", width / 2, 200);
+    textStyle(NORMAL);
+    text("Para moverte usá las flechas,", width / 2, 225);
+    text("o las teclas W A S D", width / 2, 240);
+    text("Para disparar al jefe usá Z o J", width / 2, 255);
 
     // Indicaciones
-    text("Elegí la dificultad:", width / 2, 280);
+    textStyle(BOLD);
+    text("Elegí la dificultad", width / 2, 290);
 
 
     // Mostrar dropdown dentro del canvas
@@ -163,7 +169,9 @@ function drawInicio() {
 
     fill(255);
     textSize(18);
-    text("JUGAR", width / 2, btnY + startBtn.h / 2);
+        textAlign(CENTER, CENTER);
+    text("JUGAR", startBtn.x + startBtn.w/2, startBtn.y + startBtn.h/2);
+    textStyle(NORMAL); // resetear para otros textos
 
     // Atajos
     textSize(13);
