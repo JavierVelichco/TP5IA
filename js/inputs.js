@@ -1,4 +1,13 @@
 function keyPressed() {
+    // --- PREINTRO ---
+    if (state === STATES.PREINTRO) {
+        if (keyCode === ENTER || keyCode === RETURN) {
+        setState(STATES.INICIO);
+        noLoop();
+        redraw();
+        }
+        return;
+    }
 
     // --- INICIO ---
     if (state === STATES.INICIO) {
@@ -74,7 +83,25 @@ function keyPressed() {
     }
 }
 function mousePressed() {
+    
+  // --- PREINTRO ---
+    if (state === STATES.PREINTRO) {
+
+        const overBtn =
+            mouseX >= preIntroBtn.x && mouseX <= preIntroBtn.x + preIntroBtn.w &&
+            mouseY >= preIntroBtn.y && mouseY <= preIntroBtn.y + preIntroBtn.h;
+
+        if (overBtn) {
+            setState(STATES.INICIO);
+            noLoop();
+            redraw();
+        }
+        return;
+    }
+
+    // --- INICIO ---
     if (state === STATES.INICIO) {
+
         // 1) ¿Clic en el menú desplegable (canvas)?
         if (diffDropdown && diffDropdown.handleMousePressed(mouseX, mouseY)) {
             redraw(); // usa noLoop(), así refrescamos la vista
@@ -89,10 +116,12 @@ function mousePressed() {
         return;
     }
 
+    // --- CRÉDITOS ---
     if (state === STATES.CREDITOS) {
         setState(STATES.INICIO);
         noLoop();
         redraw();
+        return;
     }
 }
 

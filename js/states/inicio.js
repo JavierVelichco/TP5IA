@@ -129,20 +129,20 @@ function drawInicio() {
 
     // Título
     textSize(28);
-    text("Llegar a fin de mes", width / 2, 70);
+    text("Quién llega a fin de mes", width / 2, 70);
 
     // Subtítulo 
-    textSize(14);
-    text("Tratá de sobrevivir con...", width / 2, 110);
-    text("un Salario Mínimo Vital y Móvil argentino.", width / 2, 135);
-    text("Esquivá gastos y enfrentá al jefe a fin de mes.", width / 2, 160);
+    textSize(19);
+    text("¡Tratá de sobrevivir! ", width / 2, 110);
 
     // Controles 
-    text("Mover: Flechas o WASD  •  Disparar al jefe: Z o J", width / 2, 200);
-    text("Objetivo: Sobrevivir sin deudas", width / 2, 230);
+    text("CONTROLES", width / 2, 175);
+    text("Para moverte usá las flechas", width / 2, 200);
+    text("o las teclas W A S D", width / 2, 220);
+    text("Para disparar al jefe usá Z o J", width / 2, 240);
 
     // Indicaciones
-    text("Elegí la dificultad:", width / 2, 270);
+    text("Elegí la dificultad:", width / 2, 280);
 
 
     // Mostrar dropdown dentro del canvas
@@ -150,7 +150,7 @@ function drawInicio() {
     diffDropdown.draw();
 
     // --- Botón JUGAR ---
-    const btnY = 360; // si querés proporcional, podés usar Math.round(height * 0.60)
+    const btnY = 360; 
     startBtn.x = width / 2 - startBtn.w / 2;
     startBtn.y = btnY;
 
@@ -167,7 +167,7 @@ function drawInicio() {
 
     // Atajos
     textSize(13);
-    text("ENTER para comenzar • C para Créditos", width / 2, btnY + 90);
+    text("C para Créditos", width / 2, btnY + 150);
 }
 
 
@@ -205,7 +205,7 @@ function cycleDifficulty(dir) {
     setDifficulty(DIFF_OPTIONS[idx].value);   // aplica el preset
     if (typeof diffDropdown !== "undefined" && diffDropdown) {
         diffDropdown.selectedIndex = idx;       // sincroniza UI del desplegable
-        diffDropdown.open = false;              // opcional: cerrar si estaba abierto
+        diffDropdown.open = false;              // cerrar si estaba abierto
     }
     redraw(); // porque usás noLoop()
 }

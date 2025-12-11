@@ -10,20 +10,17 @@ let startBtn = { x: 0, y: 0, w: 180, h: 44 };
 function setup() {
     cnv = createCanvas(400, 600);
 
-    // Estado inicial y dificultad por defecto (usa tu módulo difficulty.js)
-    setState(STATES.INICIO);
-    setDifficulty(CURRENT_DIFF);
+    // ESTADO INICIAL: PREINTRO
+    setState(STATES.PREINTRO);   // << CAMBIO CLAVE
 
-    // En pantallas estáticas preferimos noLoop() + redraw() manual
+    setDifficulty(CURRENT_DIFF);
     noLoop();
 
-    // Inicialización básica (las clases están en /entities y /ui)
     noStroke();
     if (typeof Player === "function") player = new Player();
     startTimeGlobal = millis();
     monthStartTime = millis();
 
-    // Fondo de ciudad (si tu módulo city usa este array global 'buildings')
     if (Array.isArray(buildings)) {
         buildings.length = 0;
         for (let i = 0; i < 10; i++) {
@@ -33,18 +30,15 @@ function setup() {
     }
 
     textFont("Arial");
-    // Habilita el audio tras primer click
+
     userStartAudio().then(() => {
         console.log("AudioContext listo, podemos reproducir música");
-
-        // Iniciar música de menú
         if (musicaMenu && !musicaMenu.isPlaying()) {
             musicaMenu.loop();
             musicaMenu.setVolume(0.5);
         }
     });
 }
-
 function draw() {
     // 0) La transición del jefe SIEMPRE tiene prioridad.
     // Mientras bossTransition.active esté en true, solo dibujamos la animación.
@@ -57,6 +51,7 @@ function draw() {
 
     // 1) Pantallas estáticas (router simple)
     if (state !== STATES.JUEGO) {
+        if (state === STATES.PREINTRO) { drawPreIntro(); updatePopups?.(); return;}
         if (state === STATES.INICIO) { drawInicio?.(); updatePopups?.(); return; }
         if (state === STATES.CREDITOS) { drawCreditos?.(); updatePopups?.(); return; }
         if (state === STATES.GANAR) { drawGanar?.(); updatePopups?.(); return; }

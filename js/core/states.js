@@ -1,5 +1,6 @@
 // Estados
 const STATES = {
+    PREINTRO: "preintro",   // << NUEVO
     INICIO: "inicio",
     JUEGO: "juego",
     GANAR: "ganar",
@@ -7,7 +8,9 @@ const STATES = {
     CREDITOS: "creditos",
     SCORE: "score",
 };
-let state = STATES.INICIO;
+
+let state = STATES.PREINTRO;   // << arrancamos acá
+
 
 // === AUDIO ===
 function stopAllMusic() {
