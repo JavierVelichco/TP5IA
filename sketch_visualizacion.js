@@ -1,9 +1,8 @@
 let datos = [];
-let anim = 0; // para la animación de entrada
-let hoverIndex = -1; // índice del jugador bajo el mouse
+let barraAnim = []; // altura animada de cada barra
+let hoverIndex = -1;
 
 function preload() {
-    // visualizacion.html y get_data.php están en la misma carpeta:
     datos = loadJSON("get_data.php");
 }
 
@@ -11,10 +10,13 @@ function setup() {
     let canvas = createCanvas(800, 500);
     canvas.parent("contenedor");
     textFont("system-ui");
+
+    let lista = Array.isArray(datos) ? datos : Object.values(datos);
+    barraAnim = new Array(lista.length).fill(0);
 }
 
 function formatearNumero(n) {
-    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return Number(n).toLocaleString();
 }
 
 function draw() {
@@ -27,9 +29,7 @@ function draw() {
         return;
     }
 
-    // Asegurar que sea un array (y NO modificar el original)
     let lista = Array.isArray(datos) ? datos : Object.values(datos);
-
     if (lista.length === 0) {
         fill(255);
         textSize(16);
@@ -37,101 +37,111 @@ function draw() {
         return;
     }
 
-    // Animación suave de entrada
-    anim += 0.02;
-    if (anim > 1) anim = 1;
-
-    let margenIzq = 150;
     let margenSup = 60;
-    let espacioVertical = 60;
-    let paddingDerecho = 120; // margen a la derecha
+    let margenInf = 60; 
+    let margenIzq = 100;
+    let margenDer = 100;
 
-    // Buscar puntaje máximo
+    // Eje horizontal en cero
+    let ejeY = height / 2;
+
+    // Puntaje máximo absoluto (para escala simétrica)
     let maxPuntos = 0;
     for (let j of lista) {
         let p = Number(j.puntos);
-        if (p > maxPuntos) maxPuntos = p;
+        if (Math.abs(p) > maxPuntos) maxPuntos = Math.abs(p);
     }
     if (maxPuntos === 0) maxPuntos = 1;
 
-    fill(255);
-    textSize(18);
-    textAlign(LEFT, TOP);
-    text("Ranking de puntajes", 20, 20);
 
-    // Antes del bucle, reseteamos el índice de hover
+    // Dibujar ejes
+    stroke(150);
+    strokeWeight(1);
+    line(margenIzq, margenSup, margenIzq, height - margenInf); // eje vertical
+    line(margenIzq, ejeY, width - margenDer, ejeY); // eje horizontal
+
     hoverIndex = -1;
 
-    // Recorremos la lista en el orden que viene (NO hacemos sort aquí)
+    // Espacio y ancho de barra
+    let espacioEntreBarras = (width - margenIzq - margenDer) / lista.length;
+    let barraAncho = espacioEntreBarras * 0.5;
+
     for (let i = 0; i < lista.length; i++) {
         let jugador = lista[i];
-
-        let nombre = jugador.nombre;
         let puntos = Number(jugador.puntos);
 
-        let anchoMax = width - margenIzq - paddingDerecho;
-        let anchoBarra = map(puntos, 0, maxPuntos, 0, anchoMax);
-        anchoBarra *= anim; // efecto de entrada
+        // Altura final según signo, sin abs
+        let barraAlturaFinal = map(puntos, -maxPuntos, maxPuntos, -(height - margenSup - margenInf)/2, (height - margenSup - margenInf)/2);
 
-        let y = margenSup + i * espacioVertical;
+        // Efecto rebote con easing
+        barraAnim[i] += (barraAlturaFinal - barraAnim[i]) * 0.1;
+        if (Math.abs(barraAlturaFinal - barraAnim[i]) < 0.5) barraAnim[i] = barraAlturaFinal;
 
-        // --- DETECCIÓN DE HOVER (sin modificar el orden) ---
-        let estaSobre = (
-            mouseX > margenIzq &&
-            mouseX < margenIzq + anchoBarra &&
-            mouseY > y - 10 &&
-            mouseY < y + 10
-        );
-        if (estaSobre) {
-            hoverIndex = i;
-        }
-        // --------------------------------------------------
+        // Posición X centrada en su slot
+        let x = margenIzq + i * espacioEntreBarras + espacioEntreBarras/2;
 
-        // Línea guía
-        stroke(60);
-        strokeWeight(1);
-        line(margenIzq, y, margenIzq + anchoMax, y);
+        // Posición Y según barraAnim
+        let y = ejeY - barraAnim[i];
 
-        // Barra (se resalta sólo en color si está bajo el mouse)
+        // Detección de hover
+        let estaSobre = mouseX > x - barraAncho/2 && mouseX < x + barraAncho/2 &&
+                        mouseY > min(y, ejeY) && mouseY < max(y, ejeY);
+        if (estaSobre) hoverIndex = i;
+
+        // Dibujar barra
         noStroke();
-        if (i === hoverIndex) {
-            fill(120, 190, 255, 240);
-        } else {
-            fill(80, 140, 255, 220);
-        }
-        rect(margenIzq, y - 10, anchoBarra, 20, 5);
+        if (puntos >= 0) fill(0, 200, 100, 220); // verde positivo
+        else fill(255, 50, 50, 220); // rojo negativo
+        rect(x - barraAncho/2, y, barraAncho, barraAnim[i]);
 
-        // Nombre
+        // Nombre y puntaje arriba o abajo de la barra
         fill(255);
-        textSize(14);
-        textAlign(LEFT, CENTER);
-        text(`${i + 1}. ${nombre}`, 20, y);
-
-        // Puntaje formateado con separador de miles
-        let puntosTxt = formatearNumero(puntos); // usando la función que definimos antes
-        textAlign(LEFT, CENTER);
-        let xPuntaje = margenIzq + anchoBarra + 10;
-        text(puntosTxt, xPuntaje, y);
+        textSize(12);
+        textAlign(CENTER, BOTTOM);
+        if (puntos >= 0) {
+            text(jugador.nombre, x, y - 4);
+            text(formatearNumero(puntos), x, y - 18);
+        } else {
+            text(jugador.nombre, x, y + barraAnim[i] + 14);
+            text(formatearNumero(puntos), x, y + barraAnim[i] + 28);
+        }
     }
 
-    // Panel de detalle si el mouse está sobre alguna barra
+    // Panel de detalle al mouse
     if (hoverIndex >= 0 && hoverIndex < lista.length) {
         let j = lista[hoverIndex];
+        let panelW = 230;
+        let panelH = 90;
+        let offsetX = 15;
+        let offsetY = 15;
+        let panelX = mouseX + offsetX;
+        let panelY = mouseY + offsetY;
+
+        if (panelX + panelW > width) panelX = mouseX - panelW - offsetX;
+        if (panelY + panelH > height) panelY = mouseY - panelH - offsetY;
 
         noStroke();
         fill(0, 0, 0, 180);
-        rect(width - 260, 60, 230, 90, 10);
+        rect(panelX, panelY, panelW, panelH, 10);
 
         fill(255);
         textSize(14);
         textAlign(LEFT, TOP);
-        let xPanel = width - 250;
-        let yPanel = 70;
-        text(`Jugador: ${j.nombre}`, xPanel, yPanel);
-        text(`Puntaje: ${formatearNumero(Number(j.puntos))}`, xPanel, yPanel + 22);
-        // Aquí podríamos añadir más info (mes, resultado) si luego la traemos de la BD
+        text(`Jugador: ${j.nombre}`, panelX + 10, panelY + 10);
+        text(`Puntaje: ${formatearNumero(Number(j.puntos))}`, panelX + 10, panelY + 32);
+    }
+
+    // Marcas eje Y
+    stroke(150);
+    strokeWeight(1);
+    fill(200);
+    textSize(12);
+    textAlign(RIGHT, CENTER);
+    let numMarcas = 5;
+    for (let i = -numMarcas; i <= numMarcas; i++) {
+        let v = (i * maxPuntos) / numMarcas;
+        let yMarc = ejeY - map(v, -maxPuntos, maxPuntos, -(height - margenSup - margenInf)/2, (height - margenSup - margenInf)/2);
+        line(margenIzq - 5, yMarc, margenIzq, yMarc);
+        text(Math.round(v), margenIzq - 10, yMarc);
     }
 }
-
-
-
