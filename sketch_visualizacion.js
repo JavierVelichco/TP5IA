@@ -7,7 +7,7 @@ function preload() {
 }
 
 function setup() {
-    let canvas = createCanvas(800, 500);
+    let canvas = createCanvas(600, 700);
     canvas.parent("contenedor");
     textFont("system-ui");
 
