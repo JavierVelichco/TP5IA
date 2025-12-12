@@ -208,8 +208,11 @@ function updateBossPhase() {
             monthIndex = nextMonth;
             actualizarSueldo(monthIndex);
             monthStartTime = millis();
+            monthStartTime = millis();
+            postBossCooldown = 1000; 
             return;
         }
+        
     }
 
     // D2) ¿Se acabó el tiempo del jefe? Penalidad y avanzar (sin transición final)
@@ -229,6 +232,7 @@ function updateBossPhase() {
         } else {
             actualizarSueldo(monthIndex);
             monthStartTime = millis();
+            postBossCooldown = 1000;
         }
     }
 }
@@ -324,6 +328,7 @@ function updateJuego() {
     // 👇 Clave: si hay jefe o una transición activa, actualizar esa fase
     if (inBoss || bossTransition.active) {
         updateBossPhase();
+        return;
     } else {
         // Juego “normal” (sin jefe)
         const elapsed = millis() - monthStartTime;
@@ -340,9 +345,10 @@ function updateJuego() {
         }
 
         // ¿cierra el mes?
-        if (elapsed > MONTH_DURATION_MS) {
-            // Si querés entrar a jefe acá, descomentá:
-            // enterBoss();
+        if (postBossCooldown > 0) {
+            postBossCooldown -= deltaTime;
+        } 
+        else if (elapsed > MONTH_DURATION_MS) {
             monthIndex++;
             monthStartTime = millis();
         }

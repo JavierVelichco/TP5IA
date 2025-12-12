@@ -8,6 +8,9 @@ let cnv;
 let startBtn = { x: 0, y: 0, w: 180, h: 44 };
 
 function setup() {
+    userStartAudio().then(() => {
+    console.log("Audio habilitado");
+    });
     cnv = createCanvas(400, 600);
 
     // ESTADO INICIAL: PREINTRO
@@ -19,7 +22,6 @@ function setup() {
     noStroke();
     if (typeof Player === "function") player = new Player();
     startTimeGlobal = millis();
-    monthStartTime = millis();
 
     if (Array.isArray(buildings)) {
         buildings.length = 0;
@@ -49,7 +51,7 @@ function draw() {
         return;
     }
 
-    // 1) Pantallas estáticas (router simple)
+    // 1) Pantallas 
     if (state !== STATES.JUEGO) {
         if (state === STATES.PREINTRO) { drawPreIntro(); updatePopups?.(); return;}
         if (state === STATES.INICIO) { drawInicio?.(); updatePopups?.(); return; }
@@ -68,10 +70,53 @@ function draw() {
     const now = millis();
     const elapsedMonth = now - monthStartTime;
 
+    // Si estamos EN PELEA con un boss, delego TODO a updateBossPhase y salgo
     if (inBoss) {
-        // Puede disparar startBossTransition('win'|'lose') internamente
         updateBossPhase?.();
+        updatePopups?.();
+        return; // IMPORTANTÍSIMO: no procesar spawning ni cierre de mes aquí
+    }
+
+    // Si hay cooldown post-boss, lo decremento y no dejo que cierre el mes ni spawnee
+    if (postBossCooldown > 0) {
+        // deltaTime es proveído por p5.js; sirve para decrementar en ms
+        postBossCooldown -= deltaTime;
+        if (postBossCooldown < 0) postBossCooldown = 0;
+
+        // Mientras hay cooldown, procesamos solamente objetos ya existentes (caídas, player)
+        // para que la pantalla no quede congelada, pero evitamos que se crezcan nuevos objetos
+        for (let i = falling.length - 1; i >= 0; i--) {
+            const o = falling[i];
+            o.update?.();
+            o.draw?.();
+            if (o.hits?.(player)) {
+                money += o.value;
+                floatingPopup?.(
+                    o.x, o.y,
+                    (o.value > 0 ? "+" : "") + "$" + nf(abs(int(o.value)), 0, 0),
+                    o.value > 0 ? color(0, 180, 0) : color(220, 50, 50)
+                );
+                falling.splice(i, 1);
+            } else if (o.offscreen?.()) {
+                falling.splice(i, 1);
+            }
+        }
+
+        // Jugador + balas (si querés que sigan activos durante cooldown)
+        player.update?.();
+        player.draw?.();
+
+        for (let i = bullets.length - 1; i >= 0; i--) {
+            const b = bullets[i];
+            b.update?.();
+            b.draw?.();
+            if (b.offscreen?.()) bullets.splice(i, 1);
+        }
+
+        // En cooldown NO entramos a jefe aunque elapsedMonth sea > límite
+        // tampoco ejecutamos handleSpawning
     } else {
+        // Sin cooldown: flujo normal sin jefe
         // Spawning y objetos que caen
         handleSpawning?.(elapsedMonth);
 
@@ -109,7 +154,7 @@ function draw() {
         if (elapsedMonth >= MONTH_DURATION_MS) enterBoss?.();
     }
 
-    // Balas enemigas
+    // Balas enemigas (se procesan fuera del bloque del boss para que sigan impactando)
     for (let i = enemyBullets.length - 1; i >= 0; i--) {
         const eb = enemyBullets[i];
         eb.update?.();

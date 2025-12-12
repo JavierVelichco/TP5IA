@@ -14,6 +14,7 @@ let monthIndex = 0;
 let monthStartTime = 0;
 let inBoss = false;
 let bossStartTime = 0;
+let postBossCooldown = 0;
 let boss = null;
 let gameOver = false;
 let victory = false;
